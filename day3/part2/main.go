@@ -8,6 +8,10 @@ import (
 	"strconv"
 )
 
+// The bit manipulation code in this is uglier than I would like
+// I hard coded some things because I was convinced I had mis-written some things
+// but turns out I had mis-read the problem ¯\_(ツ)_/¯
+
 func main() {
 	f, err := os.Open(os.Args[1])
 	if err != nil {
