@@ -11,11 +11,10 @@ import (
 
 // this is the solution to part 2
 // comment out diagonal point gen for part 1
-// this is also very slow. There are quicker algorithms
-// but many assume working in a continuous problem space
-// instead of discrete, and others assume things I don't think are true
-// e.g. no line segments sharing endpoints.
-// This one seems very interesting however: https://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm
+// this is also very slow (17 seconds)! There are quicker algorithms
+// This one seems very interesting: https://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm
+// Probably the biggest issue: this naive approach generates every point to compare
+// instad of just doing MathTM
 
 func main() {
     f, err := os.Open(os.Args[1])
