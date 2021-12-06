@@ -10,8 +10,9 @@ import (
 
 // naieve iterative-append version works just fine for 80 iterations
 // but at 256 iterations you're likely to go OOM -- issue is space complexity
-// however you can rewrite with O(1) space complexity (I think? it's been a while since school)
+// however you can rewrite with O(1) space complexity w/r/t # of fish (I think? it's been a while since school)
 // by just unrolling it
+// This also changes time complexity from O(numbe of lanternfish) to O(number of days)
 
 func main() {
     f, err := os.Open(os.Args[1])
