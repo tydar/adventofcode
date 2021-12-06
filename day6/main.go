@@ -54,40 +54,10 @@ func main() {
         school[1] = new1
         school[0] = new0
     }
-    /*
-    for j := 0; j < 256; j++ {
-        count := len(lfs)
-        for i := 0; i < count; i++ {
-            if lfs[i] == 0 {
-                lfs[i] = 6
-                lfs = append(lfs, 8)
-            } else {
-                lfs[i]--
-            }
-        }
-       // fmt.Printf("After day %d: %v\n", j, lfs)
-    }
-    */
     
     count := 0
     for i := 0; i < 9; i++ {
         count += school[i]
     }
     fmt.Printf("Count: %d\n", count)
-}
-
-func offspringCount(state, days int) int {
-    count := 0
-    daysAfterFirst := days - state - 1
-    if daysAfterFirst > 0 {
-        count += 1 
-        count += offspringCount(8, daysAfterFirst)
-    }
-    for i := daysAfterFirst; i > 0; i -= 7 {
-        if i > 0 {
-            count += 1 
-            count += offspringCount(8, i)
-        }
-    }
-    return count 
 }
