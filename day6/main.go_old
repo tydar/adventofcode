@@ -1,0 +1,47 @@
+package main
+
+import (
+    "strings"
+    "fmt"
+    "bufio"
+    "os"
+    "strconv"
+)
+
+func main() {
+    f, err := os.Open(os.Args[1])
+    if err != nil {
+        panic(err)
+    }
+
+    lfs := make([]int, 0)
+
+    scanner := bufio.NewScanner(f)
+    for scanner.Scan() {
+        list := scanner.Text()
+        tok := strings.Split(list, ",")
+        for i := range tok {
+            n, err := strconv.Atoi(tok[i])
+            if err != nil {
+                panic(err)
+            }
+
+            lfs = append(lfs, n)
+        }
+    }
+
+
+    for j := 0; j < 256; j++ {
+        count := len(lfs)
+        for i := 0; i < count; i++ {
+            if lfs[i] == 0 {
+                lfs[i] = 6
+                lfs = append(lfs, 8)
+            } else {
+                lfs[i]--
+            }
+        }
+       // fmt.Printf("After day %d: %v\n", j, lfs)
+    }
+    fmt.Printf("Count: %d\n", len(lfs))
+}
