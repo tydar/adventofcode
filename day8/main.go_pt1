@@ -1,0 +1,37 @@
+package main
+
+import (
+    "fmt"
+    "bufio"
+    "os"
+    "strings"
+)
+
+func main () {
+    f, err := os.Open(os.Args[1])
+    if err != nil {
+        panic(err)
+    }
+
+    scanner := bufio.NewScanner(f)
+    one, four, seven, eight := 0, 0, 0, 0
+    for scanner.Scan() {
+        tok := strings.Split(scanner.Text(), "|")
+        fmt.Println(tok)
+        output := strings.Fields(tok[1])
+        for i := range output {
+            seg := len(output[i])
+            if seg == 2 {
+                one++
+            } else if seg == 4 {
+                four++
+            } else if seg == 3 {
+                seven++
+            } else if seg == 7 {
+                eight++
+            }
+        }
+    }
+
+    fmt.Println(one + four + seven + eight)
+}
