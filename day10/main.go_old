@@ -1,0 +1,71 @@
+package main
+
+import (
+	"os"
+	"bufio"
+	"fmt"
+)
+
+func main() {
+	f, err := os.Open(os.Args[1])
+	if err != nil {
+		panic(err)
+	}
+
+	scanner := bufio.NewScanner(f)
+	counters := map[string]int{")": 0, "]": 0, "}": 0, ">": 0,}
+	for scanner.Scan() {
+		line := scanner.Text()
+		ok, bad := validate("", line)
+		if !ok {
+			counters[bad]++
+		}
+	}
+	fmt.Printf(") %d ] %d } %d > %d\n", counters[")"], counters["]"], counters["}"], counters[">"])
+	fmt.Printf("%d\n", (counters[")"] * 3) + (counters["]"] * 57) + (counters["}"] * 1197) + (counters[">"] * 25137))
+}
+
+func validate(stack, rest string) (bool, string) {
+	if len(rest) == 0 {
+		return true, ""
+	}
+
+	next := string(rest[0])
+	if isCloser(next) {
+		if len(stack) == 0 {
+			return false, next
+		} else if string(stack[0]) == matchingBracket(next) {
+			return validate(stack[1:], rest[1:])
+		} else {
+			return false, next
+		}
+	} else {
+		return validate(next + stack, rest[1:])
+	}
+}
+
+func isCloser(s string) bool {
+	return s == "]" || s == ")" || s == "}" || s == ">"
+}
+
+func matchingBracket(s string) string {
+	switch s {
+	case "(":
+		return ")"
+	case "{":
+		return "}"
+	case "[":
+		return "]"
+	case "<":
+		return "<"
+	case ")":
+		return "("
+	case "]":
+		return "["
+	case "}":
+		return "{"
+	case ">":
+		return "<"
+	}
+	return ""
+}
