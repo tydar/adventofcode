@@ -1,0 +1,59 @@
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
+
+func main() {
+	f, err := os.Open(os.Args[1])
+	if err != nil {
+		panic(err)
+	}
+
+	scanner := bufio.NewScanner(f)
+	scanner.Scan()
+	start := scanner.Text()
+	scanner.Scan() // should give us the empty line
+
+	pairs := make(map[string]string)
+	for scanner.Scan() {
+		line := scanner.Text()
+		tok := strings.Split(line, " -> ")
+		pairs[tok[0]] = tok[1]
+	}
+
+	for i := 0; i < 10; i++ {
+		start = Step(start, pairs)
+	}
+
+	counts := make(map[string]int)
+	for i := range start {
+		c := string(start[i])
+		_, prs := counts[c]
+		if prs {
+			counts[c]++
+		} else {
+			counts[c] = 1
+		}
+	}
+	fmt.Println(counts)
+}
+
+func Step(start string, pairs map[string]string) string {
+	acc := ""
+	for i := 0; i < len(start)-1; i++ {
+		pair := start[i : i+2]
+		elem, ok := pairs[pair]
+		if ok {
+			t := strings.Split(pair, "")
+			acc += t[0] + elem
+			if i == len(start)-2 {
+				acc += t[1]
+			}
+		}
+	}
+	return acc
+}
