@@ -120,20 +120,17 @@ func dijkstra(costs [][]int) int {
 		distance[i] = rowD
 	}
 
-	cI, cJ, v := h-1, w-1, 0
+	cI, cJ := h-1, w-1
 	distance[cI][cJ] = 0
 	count := 0
-	for !visited[0][0] && v != -1 {
+	for !visited[0][0] {
 		if !visited[cI][cJ] {
 			visit(cI, cJ, distance, costs, visited)
-			cI, cJ, v = minVal(distance, visited)
+			cI, cJ, _ = minVal(distance, visited)
 			count++
-			fmt.Printf("Completing iteration %d\n", count)
 		}
 	}
 
-	fmt.Printf("0,0: %d, h-1,w-1: %d\n", costs[0][0], costs[h-1][w-1])
-	fmt.Println("For my full input, this code kept giving me the value 3047 when the answer was 3045. I am not sure why.")
 	return distance[0][0] + costs[h-1][w-1] - costs[0][0]
 }
 
@@ -186,10 +183,10 @@ func neighbors(i, j, h, w int) ([]int, []int) {
 
 func minVal(a [][]int, visited [][]bool) (int, int, int) {
 	min := -1
-	minI, minJ := 0, 0
+	minI, minJ := -1, -1
 	for i := range a {
 		for j := range a[i] {
-			if (a[i][j] < min || min == -1) && !visited[i][j] {
+			if (a[i][j] < min || minI == -1) && a[i][j] != -1 && !visited[i][j] {
 				min = a[i][j]
 				minI, minJ = i, j
 			}
