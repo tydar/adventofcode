@@ -1,0 +1,78 @@
+package main
+
+import (
+	"fmt"
+	"math/bits"
+	"strconv"
+)
+
+const (
+	VERS_BITS  = 3
+	TYPE_BITS  = 3
+	LTYPE_BITS = 1
+	TOTAL_BITS = 15
+	SUBP_BITS  = 11
+	CHUNK_BITS = 5
+)
+
+func main() {
+	// can use strconv.ParseInt to get hex string -> int64
+	// then can do bitwise ops to decode
+	i, e := strconv.ParseUint("d2fe28", 16, 64)
+	if e != nil {
+		panic(e)
+	}
+
+	fmt.Printf("%b\n", i)
+}
+
+func VersionFromPacket(packet uint64) uint64 {
+	l := bits.Len64(packet)
+	v := packet >> uint64(l-VERS_BITS)
+	return v
+}
+
+func OperatorToSubpackets(packet uint64) []uint64 {
+	return []uint64{}
+}
+
+func ParseLiteral(packet uint64) {
+	l := bits.Len64(packet)
+	fmt.Printf("%d\n", l)
+	v := packet >> uint64(l-VERS_BITS)
+	fmt.Printf("%b\n", v)
+	t := (packet >> uint64(l-VERS_BITS-TYPE_BITS)) &^ (SetXBits(VERS_BITS) << TYPE_BITS)
+	fmt.Printf("%b\n", t)
+
+	read := true
+	chunk := (packet >> uint64(l-VERS_BITS-TYPE_BITS-CHUNK_BITS)) &^ (SetXBits(VERS_BITS+TYPE_BITS) << CHUNK_BITS)
+	count := 1
+	for read {
+		if uint64(0b10000)&chunk != uint64(0b10000) {
+			// this is the last chunk if no leading 0
+			read = false
+		}
+		fmt.Printf("%b\n", chunk)
+		count++
+		chunk = (packet >> uint64(l-VERS_BITS-TYPE_BITS-(CHUNK_BITS*count))) &^ (SetXBits(VERS_BITS+TYPE_BITS+(CHUNK_BITS*(count-1))) << CHUNK_BITS)
+	}
+}
+
+func Uint64Pow(n, x uint64) uint64 {
+	v := uint64(1)
+	for x > 0 {
+		v *= n
+		x--
+	}
+	return v
+}
+
+func SetXBits(x int) uint64 {
+	v := uint64(0)
+	for x >= 0 {
+		xu := uint64(x)
+		v += Uint64Pow(2, xu)
+		x--
+	}
+	return v
+}
